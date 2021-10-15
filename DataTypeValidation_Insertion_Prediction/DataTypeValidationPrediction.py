@@ -11,9 +11,6 @@ class dBOperation:
     """
           This class shall be used for handling all the SQL operations.
 
-          Written By: iNeuron Intelligence
-          Version: 1.0
-          Revisions: None
 
           """
 
@@ -23,9 +20,7 @@ class dBOperation:
         self.goodFilePath = "Prediction_Raw_Files_Validated/Good_Raw"
         self.logger = App_Logger()
 
-
-    def dataBaseConnection(self,DatabaseName):
-
+    def dataBaseConnection(self, DatabaseName):
         """
                         Method Name: dataBaseConnection
                         Description: This method creates the database with the given name and if Database already exists then opens the connection to the DB.
@@ -41,17 +36,18 @@ class dBOperation:
             conn = sqlite3.connect(self.path+DatabaseName+'.db')
 
             file = open("Prediction_Logs/DataBaseConnectionLog.txt", 'a+')
-            self.logger.log(file, "Opened %s database successfully" % DatabaseName)
+            self.logger.log(
+                file, "Opened %s database successfully" % DatabaseName)
             file.close()
         except ConnectionError:
             file = open("Prediction_Logs/DataBaseConnectionLog.txt", 'a+')
-            self.logger.log(file, "Error while connecting to database: %s" %ConnectionError)
+            self.logger.log(
+                file, "Error while connecting to database: %s" % ConnectionError)
             file.close()
             raise ConnectionError
         return conn
 
-    def createTableDb(self,DatabaseName,column_names):
-
+    def createTableDb(self, DatabaseName, column_names):
         """
            Method Name: createTableDb
            Description: This method creates a table in the given database which will be used to insert the Good data after raw data validation.
@@ -71,13 +67,15 @@ class dBOperation:
                 type = column_names[key]
 
                 # we will remove the column of string datatype before loading as it is not needed for training
-                #in try block we check if the table exists, if yes then add columns to the table
+                # in try block we check if the table exists, if yes then add columns to the table
                 # else in catch block we create the table
                 try:
                     #cur = cur.execute("SELECT name FROM {dbName} WHERE type='table' AND name='Good_Raw_Data'".format(dbName=DatabaseName))
-                    conn.execute('ALTER TABLE Good_Raw_Data ADD COLUMN "{column_name}" {dataType}'.format(column_name=key,dataType=type))
+                    conn.execute('ALTER TABLE Good_Raw_Data ADD COLUMN "{column_name}" {dataType}'.format(
+                        column_name=key, dataType=type))
                 except:
-                    conn.execute('CREATE TABLE  Good_Raw_Data ({column_name} {dataType})'.format(column_name=key, dataType=type))
+                    conn.execute('CREATE TABLE  Good_Raw_Data ({column_name} {dataType})'.format(
+                        column_name=key, dataType=type))
 
             conn.close()
 
@@ -86,7 +84,8 @@ class dBOperation:
             file.close()
 
             file = open("Prediction_Logs/DataBaseConnectionLog.txt", 'a+')
-            self.logger.log(file, "Closed %s database successfully" % DatabaseName)
+            self.logger.log(
+                file, "Closed %s database successfully" % DatabaseName)
             file.close()
 
         except Exception as e:
@@ -95,13 +94,12 @@ class dBOperation:
             file.close()
             conn.close()
             file = open("Prediction_Logs/DataBaseConnectionLog.txt", 'a+')
-            self.logger.log(file, "Closed %s database successfully" % DatabaseName)
+            self.logger.log(
+                file, "Closed %s database successfully" % DatabaseName)
             file.close()
             raise e
 
-
-    def insertIntoTableGoodData(self,Database):
-
+    def insertIntoTableGoodData(self, Database):
         """
                                        Method Name: insertIntoTableGoodData
                                        Description: This method inserts the Good data files from the Good_Raw folder into the
@@ -116,7 +114,7 @@ class dBOperation:
                 """
 
         conn = self.dataBaseConnection(Database)
-        goodFilePath= self.goodFilePath
+        goodFilePath = self.goodFilePath
         badFilePath = self.badFilePath
         onlyfiles = [f for f in listdir(goodFilePath)]
         log_file = open("Prediction_Logs/DbInsertLog.txt", 'a+')
@@ -130,8 +128,10 @@ class dBOperation:
                     for line in enumerate(reader):
                         for list_ in (line[1]):
                             try:
-                                conn.execute('INSERT INTO Good_Raw_Data values ({values})'.format(values=(list_)))
-                                self.logger.log(log_file," %s: File loaded successfully!!" % file)
+                                conn.execute(
+                                    'INSERT INTO Good_Raw_Data values ({values})'.format(values=(list_)))
+                                self.logger.log(
+                                    log_file, " %s: File loaded successfully!!" % file)
                                 conn.commit()
                             except Exception as e:
                                 raise e
@@ -139,7 +139,8 @@ class dBOperation:
             except Exception as e:
 
                 conn.rollback()
-                self.logger.log(log_file,"Error while creating table: %s " % e)
+                self.logger.log(
+                    log_file, "Error while creating table: %s " % e)
                 shutil.move(goodFilePath+'/' + file, badFilePath)
                 self.logger.log(log_file, "File Moved Successfully %s" % file)
                 log_file.close()
@@ -149,9 +150,7 @@ class dBOperation:
         conn.close()
         log_file.close()
 
-
-    def selectingDatafromtableintocsv(self,Database):
-
+    def selectingDatafromtableintocsv(self, Database):
         """
                                        Method Name: selectingDatafromtableintocsv
                                        Description: This method exports the data in GoodData table as a CSV file. in a given location.
@@ -177,15 +176,16 @@ class dBOperation:
 
             results = cursor.fetchall()
 
-            #Get the headers of the csv file
+            # Get the headers of the csv file
             headers = [i[0] for i in cursor.description]
 
-            #Make the CSV ouput directory
+            # Make the CSV ouput directory
             if not os.path.isdir(self.fileFromDb):
                 os.makedirs(self.fileFromDb)
 
             # Open CSV file for writing.
-            csvFile = csv.writer(open(self.fileFromDb + self.fileName, 'w', newline=''),delimiter=',', lineterminator='\r\n',quoting=csv.QUOTE_ALL, escapechar='\\')
+            csvFile = csv.writer(open(self.fileFromDb + self.fileName, 'w', newline=''),
+                                 delimiter=',', lineterminator='\r\n', quoting=csv.QUOTE_ALL, escapechar='\\')
 
             # Add the headers and data to the CSV file.
             csvFile.writerow(headers)
@@ -194,10 +194,5 @@ class dBOperation:
             self.logger.log(log_file, "File exported successfully!!!")
 
         except Exception as e:
-            self.logger.log(log_file, "File exporting failed. Error : %s" %e)
+            self.logger.log(log_file, "File exporting failed. Error : %s" % e)
             raise e
-
-
-
-
-
