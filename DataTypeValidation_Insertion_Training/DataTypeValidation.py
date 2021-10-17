@@ -10,8 +10,6 @@ from application_logging.logger import App_Logger
 class dBOperation:
     """
       This class shall be used for handling all the SQL operations.
-
-
       """
 
     def __init__(self):
@@ -22,17 +20,13 @@ class dBOperation:
 
     def dataBaseConnection(self, DatabaseName):
         """
-                Method Name: dataBaseConnection
-                Description: This method creates the database with the given name and if Database already exists then opens the connection to the DB.
-                Output: Connection to the DB
-                On Failure: Raise ConnectionError
 
+        This method creates the database with the given name and if Database already exists then opens the connection to the DB.
 
+        """
 
-                """
         try:
             conn = sqlite3.connect(self.path+DatabaseName+'.db')
-
             file = open("Training_Logs/DataBaseConnectionLog.txt", 'a+')
             self.logger.log(
                 file, "Opened %s database successfully" % DatabaseName)
@@ -47,16 +41,11 @@ class dBOperation:
 
     def createTableDb(self, DatabaseName, column_names):
         """
-                        Method Name: createTableDb
-                        Description: This method creates a table in the given database which will be used to insert the Good data after raw data validation.
-                        Output: None
-                        On Failure: Raise Exception
 
-                         Written By: iNeuron Intelligence
-                        Version: 1.0
-                        Revisions: None
+            This method creates a table in the given database which will be used to insert the Good data after raw data validation.
 
-                        """
+        """
+
         try:
             conn = self.dataBaseConnection(DatabaseName)
             c = conn.cursor()
@@ -118,17 +107,9 @@ class dBOperation:
             raise e
 
     def insertIntoTableGoodData(self, Database):
-        """
-                               Method Name: insertIntoTableGoodData
-                               Description: This method inserts the Good data files from the Good_Raw folder into the
-                                            above created table.
-                               Output: None
-                               On Failure: Raise Exception
-
-                                Written By: iNeuron Intelligence
-                               Version: 1.0
-                               Revisions: None
-
+        """          
+            This method inserts the Good data files from the Good_Raw folder into the
+            above created table.
         """
 
         conn = self.dataBaseConnection(Database)
@@ -168,19 +149,11 @@ class dBOperation:
 
     def selectingDatafromtableintocsv(self, Database):
         """
-                               Method Name: selectingDatafromtableintocsv
-                               Description: This method exports the data in GoodData table as a CSV file. in a given location.
-                                            above created .
-                               Output: None
-                               On Failure: Raise Exception
-
-                                Written By: iNeuron Intelligence
-                               Version: 1.0
-                               Revisions: None
-
+                             This method exports the data in GoodData table as a CSV file. in a given location.
+                                            above created 
         """
 
-        self.fileFromDb = 'Training_FileFromDB/'
+        self.fileFromDb = 'Training_FileFromDB'
         self.fileName = 'InputFile.csv'
         log_file = open("Training_Logs/ExportToCsv.txt", 'a+')
         try:

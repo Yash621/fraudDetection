@@ -1,11 +1,8 @@
 """
+
 This is the Entry point for Training the Machine Learning Model.
 
- 
-
 """
-
-
 # Doing the necessary imports
 from sklearn.model_selection import train_test_split
 from data_ingestion import data_loader
