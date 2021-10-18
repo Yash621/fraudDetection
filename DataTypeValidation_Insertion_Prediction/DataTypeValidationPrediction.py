@@ -49,23 +49,17 @@ class dBOperation:
 
     def createTableDb(self, DatabaseName, column_names):
         """
-           Method Name: createTableDb
-           Description: This method creates a table in the given database which will be used to insert the Good data after raw data validation.
-           Output: None
-           On Failure: Raise Exception
 
-            Written By: iNeuron Intelligence
-           Version: 1.0
-           Revisions: None
+         This method creates a table in the given database which will be used to insert the Good data after raw data validation.
 
         """
+
         try:
             conn = self.dataBaseConnection(DatabaseName)
             conn.execute('DROP TABLE IF EXISTS Good_Raw_Data;')
 
             for key in column_names.keys():
                 type = column_names[key]
-
                 # we will remove the column of string datatype before loading as it is not needed for training
                 # in try block we check if the table exists, if yes then add columns to the table
                 # else in catch block we create the table
@@ -101,18 +95,10 @@ class dBOperation:
 
     def insertIntoTableGoodData(self, Database):
         """
-                                       Method Name: insertIntoTableGoodData
-                                       Description: This method inserts the Good data files from the Good_Raw folder into the
-                                                    above created table.
-                                       Output: None
-                                       On Failure: Raise Exception
-
-                                        Written By: iNeuron Intelligence
-                                       Version: 1.0
-                                       Revisions: None
+                                       This method inserts the Good data files from the Good_Raw folder into the
+                                       above created table.
 
                 """
-
         conn = self.dataBaseConnection(Database)
         goodFilePath = self.goodFilePath
         badFilePath = self.badFilePath
@@ -152,15 +138,8 @@ class dBOperation:
 
     def selectingDatafromtableintocsv(self, Database):
         """
-                                       Method Name: selectingDatafromtableintocsv
-                                       Description: This method exports the data in GoodData table as a CSV file. in a given location.
-                                                    above created .
-                                       Output: None
-                                       On Failure: Raise Exception
 
-                                        Written By: iNeuron Intelligence
-                                       Version: 1.0
-                                       Revisions: None
+                                    This method exports the data in GoodData table as a CSV file. in a given location.
 
                 """
 

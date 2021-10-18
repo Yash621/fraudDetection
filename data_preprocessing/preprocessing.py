@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn_pandas import CategoricalImputer
+from feature_engine.imputation import CategoricalImputer
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import RandomOverSampler
 
